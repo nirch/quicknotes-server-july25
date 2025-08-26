@@ -11,12 +11,23 @@ app.get("/", (req, res) => {
 });
 
 app.get("/notes", (req, res) => {
-  res.send("Hello Notes!");
+  res.status(200).send("Hello Notes!");
 });
 
 app.post("/notes", (req, res) => {
-  res.send("Hello Create Notes!");
+  res.status(201).json({content: "Hello Create Notes!"});
 });
+
+app.get("/notes/:id", (req, res) => {
+  res.status(200).json({id: req.params.id, content: "Hello Get Specific Note"});
+});
+
+// Multiple Routes Params
+// app.get("/post/:postId/comments/:commentId", (req, res) => {
+// });
+
+
+
 
 app.get("/demo", (req, res) => {
   console.log("Headers:", req.headers);
