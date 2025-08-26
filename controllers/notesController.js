@@ -6,8 +6,7 @@ async function getNotes(req, res) {
 }
 
 async function getNoteById(req, res) {
-  const notes = await noteModel.getNotes();
-  const note = notes.find((note) => note.id === req.params.id);
+  const note = await noteModel.getNoteById(req.params.id)
   note ? res.status(200).json(note) : res.status(404).json({error: "Unknown note id"});
 }
 
