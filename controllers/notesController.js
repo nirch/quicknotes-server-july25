@@ -1,14 +1,14 @@
-const noteModel = require("../models/noteModel.js")
+const noteModel = require("../models/noteModel.js");
 
 async function getNotes(req, res) {
   const notes = await noteModel.getNotes();
   res.status(200).json(notes);
 }
 
-function getNoteById(req, res) {
-  res
-    .status(200)
-    .json({ id: req.params.id, content: "Hello Get Specific Note" });
+async function getNoteById(req, res) {
+  const notes = await noteModel.getNotes();
+  const note = notes.find((note) => note.id === req.params.id);
+  note ? res.status(200).json(note) : res.status(404).json({error: "Unknown note id"});
 }
 
 function addNote(req, res) {
