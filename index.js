@@ -5,12 +5,13 @@ const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 const notesRouter = require("./routes/noteRouter.js");
 const { logger } = require("./middlewares/logger.js");
+const { ValidationError } = require("ajv");
 
 // Middleware that runs for every route
 app.use(cors()); // adds CORS headers to every response
+app.use(logger);
 app.use(express.json()); // parsing JSON to body
 app.use(express.static("public")); // opens access to public folder
-app.use(logger);
 
 // Routes
 app.use("/notes", notesRouter);
@@ -38,6 +39,7 @@ app.get("/demo", (req, res) => {
 
 // Error Handling Middleware (always in the END)
 app.use((err, req, res, next) => {
+  console.error(err);
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Server Error",
