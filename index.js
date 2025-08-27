@@ -1,12 +1,15 @@
 const express = require("express");
 require("dotenv").config();
+const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 const notesRouter = require("./routes/noteRouter.js");
 
-// Middleware that parses JSON for every route
-app.use(express.json());
-app.use(express.static("public"));
+
+// Middleware that runs for every route
+app.use(cors());                      // adds CORS headers to every response
+app.use(express.json());              // parsing JSON to body
+app.use(express.static("public"));    // opens access to public folder
 
 // Routes
 app.use("/notes", notesRouter);
