@@ -1,7 +1,8 @@
 {
   "scripts": {
     "start": "node index.js",
-    "dev": "node --watch index.js"
+    "dev": "node --watch index.js",
+    "db:migrate": "sequelize db:migrate"
   },
   "dependencies": {
     "ajv": "^8.17.1",
