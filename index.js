@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 const notesRouter = require("./routes/noteRouter.js");
 const { logger } = require("./middlewares/logger.js");
-const { ValidationError } = require("ajv");
+const { sequelize } = require("./db/models/index.js");
 
 // Middleware that runs for every route
 app.use(cors()); // adds CORS headers to every response
@@ -16,13 +16,26 @@ app.use(express.static("public")); // opens access to public folder
 // Routes
 app.use("/notes", notesRouter);
 
+
+async function testConnection() {
+  try {
+    await sequelize.authenticate();
+    console.log('✅ Database connection established successfully.');
+  } catch (error) {
+    console.error('❌ Unable to connect to database:', error);
+  }
+}
+
 // Running the server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log("Server is listening on port " + PORT);
+  await testConnection();
 });
 
 // Home Route
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  const [results, metadata] = await sequelize.query("SELECT * FROM test_connection");
+  console.log(results);
   res.send("Hello Express!");
 });
 
