@@ -1,11 +1,13 @@
 const express = require("express");
 const { getNotes, addNote, getNoteById, getNotesORM, addNoteORM } = require("../controllers/notesController");
 const { noteValidation } = require("../middlewares/noteValidation");
+const { authenticate } = require("../middlewares/authenticate");
 
 
 const router = express.Router();
+// router.use(authenticate);
 
-router.get("/", getNotes);
+router.get("/", authenticate, getNotes);
 router.get("/orm", getNotesORM);
 
 router.post("/", noteValidation, addNote);

@@ -3,7 +3,7 @@ const { sequelize } = require("../db/models");
 const { Note } = sequelize.models;
 
 async function getNotes(req, res) {
-  const notes = await noteModel.getNotes();
+  const notes = await noteModel.getNotes(req.user.id);
   res.status(200).json(notes);
 }
 
