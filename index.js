@@ -4,6 +4,7 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 const notesRouter = require("./routes/noteRouter.js");
+const authRouter = require("./routes/authRouter.js");
 const { logger } = require("./middlewares/logger.js");
 const { sequelize } = require("./db/models/index.js");
 
@@ -15,6 +16,7 @@ app.use(express.static("public")); // opens access to public folder
 
 // Routes
 app.use("/notes", notesRouter);
+app.use("/auth", authRouter);
 
 
 async function testConnection() {
