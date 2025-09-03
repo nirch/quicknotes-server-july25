@@ -1,4 +1,6 @@
+const cloudinary = require("cloudinary").v2;
 const { sequelize } = require("../db/models/index.js");
+const fs = require("fs");
 
 async function getNotes(userId) {
   const [results, metadata] = await sequelize.query(
@@ -20,17 +22,28 @@ async function getNoteById(id) {
   return results[0];
 }
 
-async function addNote(newNote, userId) {
-  const query = `
-  INSERT INTO notes (title, text, date, userId)
-  VALUES (:title, :text, NOW(), :userId)
+async function addNote(newNote, userId, file) {
+  try {
+    const uploadResult = await cloudinary.uploader.upload(file.path);
+
+    const query = `
+  INSERT INTO notes (title, text, date, userId, imageURL)
+  VALUES (:title, :text, NOW(), :userId, :imageURL)
 `;
 
-  const [createdId] = await sequelize.query(query, {
-    replacements: { title: newNote.title, text: newNote.text, userId },
-  });
+    const [createdId] = await sequelize.query(query, {
+      replacements: {
+        title: newNote.title,
+        text: newNote.text,
+        userId,
+        imageURL: uploadResult ? uploadResult.url : null,
+      },
+    });
 
-  return getNoteById(createdId);
+    return getNoteById(createdId);
+  } finally {
+    file && fs.promises.unlink(file.path);
+  }
 }
 
 module.exports = { getNotes, getNoteById, addNote };

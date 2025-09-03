@@ -20,8 +20,7 @@ async function getNoteById(req, res) {
 }
 
 async function addNote(req, res) {
-  console.log(req.file.path);
-  const newNote = await noteModel.addNote(req.body, req.user.id);
+  const newNote = await noteModel.addNote(req.body, req.user.id, req.file);
   res.status(201).json(newNote);
 }
 
