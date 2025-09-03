@@ -12,8 +12,8 @@ function noteValidation(req, res, next) {
   if (valid) {
     next();
   } else {
-    console.log(validateNote.errors)
-    const error = new Error("Note validation error")
+    console.log(validateNote.errors);
+    const error = new Error("Note validation error");
     error.status = 400;
     error.message = validateNote.errors[0].message;
     next(error);
