@@ -4,7 +4,7 @@ const fs = require("fs");
 
 async function getNotes(userId) {
   const [results, metadata] = await sequelize.query(
-    "SELECT * FROM notes WHERE userId=:userId",
+    'SELECT * FROM notes WHERE "userId"=:userId',
     { replacements: { userId } }
   );
   return results;
@@ -26,12 +26,16 @@ async function addNote(newNote, userId, file) {
   try {
     const uploadResult = await cloudinary.uploader.upload(file.path);
 
-    const query = `
-  INSERT INTO notes (title, text, date, userId, imageURL)
-  VALUES (:title, :text, NOW(), :userId, :imageURL)
-`;
+    const isPostgres = sequelize.getDialect() === "postgres";
 
-    const [createdId] = await sequelize.query(query, {
+    const query = isPostgres
+      ? `INSERT INTO notes (title, text, date, "userId", "imageURL")
+     VALUES (:title, :text, NOW(), :userId, :imageURL)
+     RETURNING id`
+      : `INSERT INTO notes (title, text, date, userId, imageURL)
+     VALUES (:title, :text, NOW(), :userId, :imageURL)`;
+
+    const [results] = await sequelize.query(query, {
       replacements: {
         title: newNote.title,
         text: newNote.text,
@@ -39,8 +43,8 @@ async function addNote(newNote, userId, file) {
         imageURL: uploadResult ? uploadResult.url : null,
       },
     });
-
-    return getNoteById(createdId);
+    
+    return getNoteById(isPostgres ? results[0].id : results);
   } finally {
     file && fs.promises.unlink(file.path);
   }

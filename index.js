@@ -7,12 +7,17 @@ const notesRouter = require("./routes/noteRouter.js");
 const authRouter = require("./routes/authRouter.js");
 const { logger } = require("./middlewares/logger.js");
 const { sequelize } = require("./db/models/index.js");
+const cookieParser = require('cookie-parser');
 
 // Middleware that runs for every route
-app.use(cors()); // adds CORS headers to every response
+app.use(cors({
+  origin: ['http://localhost:3000'],
+  credentials: true
+})); // adds CORS headers to every response
 app.use(logger);
 app.use(express.json()); // parsing JSON to body
 app.use(express.static("public")); // opens access to public folder
+app.use(cookieParser());
 
 // Routes
 app.use("/notes", notesRouter);
