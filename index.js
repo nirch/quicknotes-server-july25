@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 
 // Middleware that runs for every route
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://notes-app-hrqe.onrender.com/'],
+  origin: ['http://localhost:3000', 'https://notes-app-hrqe.onrender.com'],
   credentials: true
 })); // adds CORS headers to every response
 app.use(logger);
